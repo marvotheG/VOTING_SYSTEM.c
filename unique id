@@ -1,0 +1,164 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Define the Voter structure
+typedef struct {
+    char name[50];
+    char id[20];      // Unique voter ID
+    char pin[10];     // Encrypted PIN
+    int has_voted;    // 0 = not voted, 1 = voted
+} Voter;
+
+// OPTIONAL: Simple XOR encryption (you can enable it if you want)
+// void encrypt(char *data, char key) {
+//     for (int i = 0; data[i] != '\0'; i++) {
+//         data[i] ^= key;
+//     }
+// }
+
+// Function to check if the ID already exists in the file
+int is_unique_id(const char *id_to_check) {
+    FILE *file = fopen("voters.dat", "rb"); // Open in read-binary mode
+    if (!file) {
+        // If the file doesn't exist yet, all IDs are unique
+        return 1;
+    }
+
+    Voter voter;
+    while (fread(&voter, sizeof(Voter), 1, file)) {
+        if (strcmp(voter.id, id_to_check) == 0) {
+            fclose(file);
+            return 0;  // Duplicate found
+        }
+    }
+
+    fclose(file);
+    return 1;  // Unique ID
+}
+
+// Function to register a voter
+void register_voter() {
+    Voter new_voter;
+
+    printf("Enter your name: ");
+    fgets(new_voter.name, sizeof(new_voter.name), stdin);
+    new_voter.name[strcspn(new_voter.name, "\n")] = 0; // Remove newline
+
+    printf("Enter your ID: ");
+    fgets(new_voter.id, sizeof(new_voter.id), stdin);
+    new_voter.id[strcspn(new_voter.id, "\n")] = 0;
+
+    if (!is_unique_id(new_voter.id)) {
+        printf("Error: ID already registered. Try again.\n");
+        return;
+    }
+
+    printf("Enter your PIN: ");
+    fgets(new_voter.pin, sizeof(new_voter.pin), stdin);
+    new_voter.pin[strcspn(new_voter.pin, "\n")] = 0;
+
+    // OPTIONAL: Encrypt PIN before storing
+    // encrypt(new_voter.pin, 'K');
+
+    new_voter.has_voted = 0;
+
+    FILE *file = fopen("voters.dat", "ab"); // Open in append-binary mode
+    if (!file) {
+        printf("Error: Could not open file to save voter.\n");
+        return;
+    }
+
+    fwrite(&new_voter, sizeof(Voter), 1, file);
+    fclose(file);
+
+    printf("✅ Registration successful!\n");
+}
+
+// Main function for testing
+int main() {
+    register_voter();
+    return 0;
+}
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Define the Voter structure
+typedef struct {
+    char name[50];
+    char id[20];      // Unique voter ID
+    char pin[10];     // Encrypted PIN
+    int has_voted;    // 0 = not voted, 1 = voted
+} Voter;
+
+// OPTIONAL: Simple XOR encryption (you can enable it if you want)
+// void encrypt(char *data, char key) {
+//     for (int i = 0; data[i] != '\0'; i++) {
+//         data[i] ^= key;
+//     }
+// }
+
+// Function to check if the ID already exists in the file
+int is_unique_id(const char *id_to_check) {
+    FILE *file = fopen("voters.dat", "rb"); // Open in read-binary mode
+    if (!file) {
+        // If the file doesn't exist yet, all IDs are unique
+        return 1;
+    }
+
+    Voter voter;
+    while (fread(&voter, sizeof(Voter), 1, file)) {
+        if (strcmp(voter.id, id_to_check) == 0) {
+            fclose(file);
+            return 0;  // Duplicate found
+        }
+    }
+
+    fclose(file);
+    return 1;  // Unique ID
+}
+
+// Function to register a voter
+void register_voter() {
+    Voter new_voter;
+
+    printf("Enter your name: ");
+    fgets(new_voter.name, sizeof(new_voter.name), stdin);
+    new_voter.name[strcspn(new_voter.name, "\n")] = 0; // Remove newline
+
+    printf("Enter your ID: ");
+    fgets(new_voter.id, sizeof(new_voter.id), stdin);
+    new_voter.id[strcspn(new_voter.id, "\n")] = 0;
+
+    if (!is_unique_id(new_voter.id)) {
+        printf("Error: ID already registered. Try again.\n");
+        return;
+    }
+
+    printf("Enter your PIN: ");
+    fgets(new_voter.pin, sizeof(new_voter.pin), stdin);
+    new_voter.pin[strcspn(new_voter.pin, "\n")] = 0;
+
+    // OPTIONAL: Encrypt PIN before storing
+    // encrypt(new_voter.pin, 'K');
+
+    new_voter.has_voted = 0;
+
+    FILE *file = fopen("voters.dat", "ab"); // Open in append-binary mode
+    if (!file) {
+        printf("Error: Could not open file to save voter.\n");
+        return;
+    }
+
+    fwrite(&new_voter, sizeof(Voter), 1, file);
+    fclose(file);
+
+    printf("✅ Registration successful!\n");
+}
+
+// Main function for testing
+int main() {
+    register_voter();
+    return 0;
+}
